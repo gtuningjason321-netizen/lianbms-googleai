@@ -1,0 +1,34 @@
+name: Build C# EXE
+
+on:
+  push:
+    branches: [ "main" ] # 当 main 分支有代码推送时触发
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest # 使用 Windows 虚拟环境编译
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x # 采用目前主流的 .NET 8.0 SDK
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Publish Single EXE
+      # 将项目打包发布为：独立运行、不需要目标电脑额外装.NET环境、单体 win-x64 的 exe
+      run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o ./publish
+
+    - name: Upload Artifact
+      # 将编译好的 exe 上传到 GitHub Actions，方便直接网页下载
+      uses: actions/upload-artifact@v4
+      with:
+        name: LianAnBmsWin-EXE
+        path: ./publish/*.exe

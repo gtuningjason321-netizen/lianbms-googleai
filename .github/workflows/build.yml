@@ -2,33 +2,34 @@ name: Build C# EXE
 
 on:
   push:
-    branches: [ "main" ] # 当 main 分支有代码推送时触发
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
   build:
-    runs-on: windows-latest # 使用 Windows 虚拟环境编译
+    runs-on: windows-latest
 
     steps:
+    # 1. 升级为 v5 以上版本以适配最新的 Node 24 基础环境
     - name: Checkout Code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
+    # 2. 升级为 v5 以上版本以适配最新的 Node 24 基础环境
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x # 采用目前主流的 .NET 8.0 SDK
+        dotnet-version: 8.0.x
 
     - name: Restore dependencies
       run: dotnet restore
 
     - name: Publish Single EXE
-      # 将项目打包发布为：独立运行、不需要目标电脑额外装.NET环境、单体 win-x64 的 exe
       run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o ./publish
 
+    # 3. 升级上传组件，保证编译出的 exe 能在网页端正常下载
     - name: Upload Artifact
-      # 将编译好的 exe 上传到 GitHub Actions，方便直接网页下载
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: LianAnBmsWin-EXE
         path: ./publish/*.exe

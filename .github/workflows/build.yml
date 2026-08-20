@@ -11,23 +11,25 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # 1. 升级为 v5 以上版本以适配最新的 Node 24 基础环境
     - name: Checkout Code
       uses: actions/checkout@v5
 
-    # 2. 升级为 v5 以上版本以适配最新的 Node 24 基础环境
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 8.0.x
 
+    # 1. 指定在 LianAnBmsWin 子文件夹下执行还原
     - name: Restore dependencies
+      working-directory: ./LianAnBmsWin
       run: dotnet restore
 
+    # 2. 指定在 LianAnBmsWin 子文件夹下执行编译和单文件发布
     - name: Publish Single EXE
-      run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o ./publish
+      working-directory: ./LianAnBmsWin
+      run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o ../publish
 
-    # 3. 升级上传组件，保证编译出的 exe 能在网页端正常下载
+    # 3. 保持在外层提取生成的 exe 并上传
     - name: Upload Artifact
       uses: actions/upload-artifact@v5
       with:

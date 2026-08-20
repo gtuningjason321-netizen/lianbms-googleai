@@ -8,7 +8,8 @@
     <!-- 开启 Windows 蓝牙 API 必须声明的目标操作系统 -->
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</ImplicitUsings>
+    <!-- 修复此处的标签闭合错误 -->
+    <Nullable>enable</Nullable>
 
     <!-- GitHub 自动化打包发布为单文件可执行程序的属性配置 -->
     <PublishSingleFile>true</PublishSingleFile>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- 设置输出类型为控制台程序 -->
+    <OutputType>Exe</OutputType>
+    <!-- 采用主流且长期支持的 .NET 8.0 运行时 -->
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <!-- 开启 Windows 蓝牙 API 必须声明的目标操作系统 -->
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</ImplicitUsings>
+
+    <!-- GitHub 自动化打包发布为单文件可执行程序的属性配置 -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <!-- 减小单文件体积，自动剪裁未使用的代码 -->
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+
+</Project>

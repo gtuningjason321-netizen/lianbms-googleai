@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Timers;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
@@ -20,7 +19,8 @@ namespace LianAnBmsWin
         private static readonly Guid BmsServiceGuid = Guid.Parse("00002760-08C2-11E1-9073-0E8AC72E1001");
         private static readonly List<DiscoveredBms> BmsList = new List<DiscoveredBms>();
         private static BluetoothLEAdvertisementWatcher? _watcher;
-        private static Timer? _pulseTimer;
+        // 修复此处：显式指定使用 System.Timers.Timer，消除重名冲突
+        private static System.Timers.Timer? _pulseTimer;
         private static bool _isSelecting = false;
 
         static async Task Main(string[] args)
@@ -72,7 +72,7 @@ namespace LianAnBmsWin
                     Console.WriteLine($" [{i + 1}] 设备名称: {BmsList[i].Name.PadRight(20)} | MAC地址: 0x{BmsList[i].MacAddress:X} | 信号: {BmsList[i].Rssi} dBm");
                 }
             }
-            Console.WriteLine(" [0] 放弃并退出程序");
+            Console.WriteLine(" 放弃并退出程序");
             Console.WriteLine("==================================================");
 
             // 3. 手动选择交互
@@ -125,7 +125,6 @@ namespace LianAnBmsWin
 
                 string localName = eventArgs.Advertisement.LocalName ?? string.Empty;
                 
-                // 放宽过滤条件：名称命中或包含特定协议特征均可
                 bool nameMatched = localName.ToUpper().Contains("LA") || 
                                    localName.ToUpper().Contains("BMS") || 
                                    localName.ToUpper().Contains("BATTERY") ||
@@ -158,8 +157,8 @@ namespace LianAnBmsWin
                 }
             };
 
-            // 【核心防御：强制唤醒脉冲】每 1.2 秒给系统蓝牙重刷一次，防止进入休眠
-            _pulseTimer = new Timer(1200);
+            // 修复此处：显式指定使用 System.Timers.Timer
+            _pulseTimer = new System.Timers.Timer(1200);
             _pulseTimer.Elapsed += (s, e) =>
             {
                 if (_isSelecting) return;
